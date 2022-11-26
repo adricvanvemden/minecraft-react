@@ -1,5 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useSphere } from '@react-three/cannon'
+import { useBox } from '@react-three/cannon'
 import { useEffect, useRef } from 'react'
 import { Vector3 } from 'three'
 import { useKeyboard } from '../hooks/useKeyboard'
@@ -11,8 +11,8 @@ export const Player = () => {
     const { moveBackward, moveForward, moveLeft, moveRight, jump } =
         useKeyboard()
     const { camera } = useThree()
-    const [ref, api] = useSphere(() => ({
-        mass: 1,
+    const [ref, api] = useBox(() => ({
+        mass: 80,
         type: 'Dynamic',
         position: [0, 1, 0],
     }))
@@ -24,33 +24,28 @@ export const Player = () => {
 
     const position = useRef([0, 0, 0])
     useEffect(() => {
-        api.position.subscribe((p) => (position.current = p))
+        api.position.subscribe((p) => {
+            position.current = p
+        })
     }, [api.position])
 
     useFrame(() => {
         camera.position.copy(
             new Vector3(
                 position.current[0],
-                position.current[1],
+                position.current[1] + 0.75,
                 position.current[2]
             )
         )
 
-        const direction = new Vector3()
-
-        const frontVector = new Vector3(
-            0,
-            0,
-            (moveBackward ? 1 : 0) - (moveForward ? 1 : 0)
-        )
-        const sideVector = new Vector3(
-            (moveLeft ? 1 : 0) - (moveRight ? 1 : 0),
-            0,
-            0
-        )
+        let frontVector = new Vector3(0, 0, 0)
+        let sideVector = new Vector3(0, 0, 0)
+        let direction = new Vector3(0, 0, 0)
+        frontVector.set(0, 0, Number(moveForward) - Number(moveBackward))
+        sideVector.set(Number(moveRight) - Number(moveLeft), 0, 0)
 
         direction
-            .subVectors(frontVector, sideVector)
+            .subVectors(sideVector, frontVector)
             .normalize()
             .multiplyScalar(SPEED)
             .applyEuler(camera.rotation)
@@ -66,5 +61,13 @@ export const Player = () => {
         }
     })
 
-    return <mesh ref={ref}></mesh>
+    return (
+        <mesh ref={ref}>
+            {/* <boxBufferGeometry
+                attach="geometry"
+                args={[1, 1.75, 1]}
+                rotation={[0, 0, 0]}
+            /> */}
+        </mesh>
+    )
 }

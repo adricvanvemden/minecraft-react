@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useStore } from '../hooks/useStore'
 import { useKeyboard } from '../hooks/useKeyboard'
 import { dirtImg, grassImg, glassImg, logImg, woodImg } from '../images/images'
@@ -11,8 +11,7 @@ const images = {
     log: logImg,
 }
 
-export const TextureSelector = () => {
-    const [visible, setVisible] = useState(false)
+export const Hotbar = () => {
     const [activeTexture, setTexture] = useStore((state) => [
         state.texture,
         state.setTexture,
@@ -34,19 +33,9 @@ export const TextureSelector = () => {
         }
     }, [dirt, glass, grass, wood, log, setTexture])
 
-    useEffect(() => {
-        const visibleTimeout = setTimeout(() => {
-            setVisible(false)
-        }, 2000)
-        setVisible(true)
-        return () => {
-            clearTimeout(visibleTimeout)
-        }
-    }, [activeTexture])
-
     return (
-        visible && (
-            <div className="absolute centered texture-selector">
+        <div className="absolute hotbar-wrapper">
+            <div className="hotbar">
                 {Object.entries(images).map(([texture, src]) => {
                     return (
                         <img
@@ -60,6 +49,6 @@ export const TextureSelector = () => {
                     )
                 })}
             </div>
-        )
+        </div>
     )
 }
