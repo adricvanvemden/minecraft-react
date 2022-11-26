@@ -1,17 +1,17 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useBox } from '@react-three/cannon'
+import { useSphere } from '@react-three/cannon'
 import { useEffect, useRef } from 'react'
 import { Vector3 } from 'three'
 import { useKeyboard } from '../hooks/useKeyboard'
 
-const JUMP_FORCE = 4
+const JUMP_FORCE = 10
 const SPEED = 4
 
 export const Player = () => {
     const { moveBackward, moveForward, moveLeft, moveRight, jump } =
         useKeyboard()
     const { camera } = useThree()
-    const [ref, api] = useBox(() => ({
+    const [ref, api] = useSphere(() => ({
         mass: 80,
         type: 'Dynamic',
         position: [0, 1, 0],
@@ -63,11 +63,7 @@ export const Player = () => {
 
     return (
         <mesh ref={ref}>
-            {/* <boxBufferGeometry
-                attach="geometry"
-                args={[1, 1.75, 1]}
-                rotation={[0, 0, 0]}
-            /> */}
+            <sphereBufferGeometry attach="geometry" args={[0.5, 64, 64]} />
         </mesh>
     )
 }

@@ -31,7 +31,7 @@ export const Cube = ({ position, texture }) => {
                 e.stopPropagation()
                 const clickedFaced = Math.floor(e.faceIndex / 2)
                 const { x, y, z } = ref.current.position
-                console.log(e)
+
                 if (e.altKey) {
                     removeCube(x, y, z)
                     return
@@ -66,7 +66,7 @@ export const Cube = ({ position, texture }) => {
             <meshStandardMaterial
                 map={activeTexture}
                 attach="material"
-                color={isHovered ? 'grey' : 'white'}
+                color={isHovered ? 'red' : 'white'}
                 transparent={true}
                 opacity={texture === 'glass' ? 0.6 : 1}
             />
